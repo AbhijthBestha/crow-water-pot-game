@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crow Pot Game</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:linear-gradient(to bottom,#87CEEB,#FFE082);
+}
+
+.game{
+    width:100%;
+    height:100vh;
+    position:relative;
+    overflow:hidden;
+}
+
+/* CLOUDS */
+
+.cloud{
+    position:absolute;
+    background:white;
+    border-radius:50px;
+    opacity:.8;
+}
+
+.cloud1{
+    width:140px;
+    height:50px;
+    top:60px;
+    left:10%;
+    animation:floatCloud 20s linear infinite;
+}
+
+.cloud2{
+    width:100px;
+    height:40px;
+    top:120px;
+    left:60%;
+    animation:floatCloud 25s linear infinite;
+}
+
+@keyframes floatCloud{
+    from{
+        transform:translateX(0);
+    }
+    to{
+        transform:translateX(120px);
+    }
+}
+
+/* ROAD */
+
+.road{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:170px;
+    background:#795548;
+}
+
+/* UI */
+
+.top-ui{
+    position:absolute;
+    top:15px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,.75);
+    color:white;
+    padding:12px 25px;
+    border-radius:15px;
+    display:flex;
+    gap:20px;
+    z-index:999;
+    font-weight:bold;
+}
+
+/* MAN */
+
+.man{
+    position:absolute;
+    bottom:70px;
+    left:50%;
+    transform:translateX(-50%);
+    width:220px;
+    height:220px;
+    transition:.4s ease;
+}
+
+/* POT */
+
+.pot{
+    position:absolute;
+    top:20px;
+    left:65px;
+    width:90px;
+    height:90px;
+    background:#8B5A2B;
+    border-radius:0 0 45px 45px;
+    border:5px solid #5D4037;
+    overflow:hidden;
+    box-shadow:0 0 15px rgba(0,0,0,.3);
+    transition:.35s ease;
+}
+
+.water{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:20%;
+    background:linear-gradient(to top,#0288D1,#4FC3F7);
+    transition:.4s;
+}
+
+/* MAN BODY */
+
+.man-head{
+    position:absolute;
+    top:105px;
+    left:90px;
+    width:40px;
+    height:40px;
+    background:#F5CBA7;
+    border-radius:50%;
+}
+
+.man-body{
+    position:absolute;
+    top:145px;
+    left:75px;
+    width:70px;
+    height:90px;
+    background:#1E3A5F;
+    border-radius:20px;
+}
+
+.hand1,.hand2{
+    position:absolute;
+    width:14px;
+    height:55px;
+    background:#F5CBA7;
+    top:110px;
+    z-index:20;
+}
+
+.hand1{
+    left:60px;
+    transform:rotate(15deg);
+}
+
+.hand2{
+    left:145px;
+    transform:rotate(-15deg);
+}
+
+.leg1,.leg2{
+    position:absolute;
+    width:15px;
+    height:60px;
+    background:black;
+    top:225px;
+}
+
+.leg1{
+    left:90px;
+}
+
+.leg2{
+    left:115px;
+}
+
+/* CROW */
+
+.crow{
+    position:absolute;
+    top:10px;
+    left:-120px;
+    width:100px;
+    height:80px;
+    animation:flyAcross 5s linear infinite;
+    z-index:100;
+}
+
+.crow-body{
+    width:70px;
+    height:45px;
+    background:black;
+    border-radius:50%;
+    position:absolute;
+    top:18px;
+    left:10px;
+}
+
+.wing1,.wing2{
+    width:38px;
+    height:18px;
+    background:#222;
+    position:absolute;
+    border-radius:50%;
+}
+
+.wing1{
+    top:5px;
+    left:15px;
+    animation:wingUp .25s infinite alternate;
+}
+
+.wing2{
+    top:22px;
+    left:25px;
+    animation:wingDown .25s infinite alternate;
+}
+
+.eye{
+    width:6px;
+    height:6px;
+    background:white;
+    border-radius:50%;
+    position:absolute;
+    top:30px;
+    left:60px;
+}
+
+.beak{
+    width:0;
+    height:0;
+    border-left:18px solid orange;
+    border-top:8px solid transparent;
+    border-bottom:8px solid transparent;
+    position:absolute;
+    left:78px;
+    top:28px;
+}
+
+/* STONE */
+
+.stone{
+    width:18px;
+    height:18px;
+    background:#616161;
+    border-radius:50%;
+    position:absolute;
+    z-index:999;
+}
+
+/* BUTTONS */
+
+.controls{
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:999;
+}
+
+button{
+    padding:16px 38px;
+    border:none;
+    border-radius:15px;
+    font-size:20px;
+    font-weight:bold;
+    cursor:pointer;
+    background:#2ECC71;
+    color:white;
+    transition:.2s;
+}
+
+button:hover{
+    transform:scale(1.08);
+}
+
+#restartBtn{
+    background:#E74C3C;
+    margin-left:12px;
+}
+
+/* MESSAGE */
+
+.message{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(0,0,0,.85);
+    color:white;
+    padding:35px 50px;
+    border-radius:20px;
+    font-size:42px;
+    text-align:center;
+    display:none;
+    z-index:9999;
+}
+
+/* ANIMATIONS */
+
+@keyframes flyAcross{
+    from{
+        left:-120px;
+    }
+    to{
+        left:110%;
+    }
+}
+
+@keyframes wingUp{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(-25deg);
+    }
+}
+
+@keyframes wingDown{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(25deg);
+    }
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+.top-ui{
+    font-size:13px;
+    gap:10px;
+}
+
+button{
+    font-size:16px;
+    padding:14px 24px;
+}
+
+.man{
+    transform:translateX(-50%) scale(.8);
+}
+
+.crow{
+    transform:scale(.8);
+}
+
+.message{
+    width:90%;
+    font-size:28px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <!-- CLOUDS -->
+
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+
+    <!-- UI -->
+
+    <div class="top-ui">
+        <div>⏳ Time: <span id="timer">40</span>s</div>
+        <div>🪨 Stones: <span id="score">0</span>/7</div>
+        <div>❌ Misses: <span id="miss">0</span>/3</div>
+    </div>
+
+    <!-- MAN -->
+
+    <div class="man" id="man">
+
+        <div class="pot" id="pot">
+            <div class="water" id="water"></div>
+        </div>
+
+        <div class="man-head"></div>
+
+        <div class="man-body"></div>
+
+        <div class="hand1"></div>
+        <div class="hand2"></div>
+
+        <div class="leg1"></div>
+        <div class="leg2"></div>
+
+    </div>
+
+    <!-- CROW -->
+
+    <div class="crow" id="crow">
+
+        <div class="wing1"></div>
+        <div class="wing2"></div>
+
+        <div class="crow-body"></div>
+
+        <div class="eye"></div>
+
+        <div class="beak"></div>
+
+    </div>
+
+    <!-- ROAD -->
+
+    <div class="road"></div>
+
+    <!-- BUTTONS -->
+
+    <div class="controls">
+
+        <button onclick="dropStone()">
+            LEAVE STONE
+        </button>
+
+        <button onclick="restartGame()" id="restartBtn">
+            RESTART
+        </button>
+
+    </div>
+
+    <!-- MESSAGE -->
+
+    <div class="message" id="message"></div>
+
+</div>
+
+<script>
+
+let score = 0;
+let misses = 0;
+let timer = 40;
+let gameOver = false;
+let countdown;
+
+const scoreText = document.getElementById("score");
+const missText = document.getElementById("miss");
+const timerText = document.getElementById("timer");
+const water = document.getElementById("water");
+const pot = document.getElementById("pot");
+const crow = document.getElementById("crow");
+const man = document.getElementById("man");
+const message = document.getElementById("message");
+
+/* START TIMER */
+
+function startTimer(){
+
+    clearInterval(countdown);
+
+    countdown = setInterval(()=>{
+
+        if(gameOver) return;
+
+        timer--;
+
+        timerText.innerText = timer;
+
+        if(timer <= 0){
+
+            loseGame("⏰ TIME UP");
+
+        }
+
+    },1000);
+
+}
+
+startTimer();
+
+/* RANDOM POSITION CHANGE */
+
+const positions = [
+
+    { man: "35%", pot: "40px" },
+
+    { man: "50%", pot: "65px" },
+
+    { man: "65%", pot: "90px" }
+
+];
+
+function changePosition(){
+
+    let random =
+    positions[Math.floor(Math.random() * positions.length)];
+
+    man.style.left = random.man;
+
+    pot.style.left = random.pot;
+
+}
+
+/* DROP STONE */
+
+function dropStone(){
+
+    if(gameOver) return;
+
+    const stone = document.createElement("div");
+
+    stone.classList.add("stone");
+
+    const crowRect = crow.getBoundingClientRect();
+
+    let x = crowRect.left + 50;
+
+    let y = crowRect.top + 45;
+
+    stone.style.left = x + "px";
+
+    stone.style.top = y + "px";
+
+    document.body.appendChild(stone);
+
+    const fall = setInterval(()=>{
+
+        y += 8;
+
+        stone.style.top = y + "px";
+
+        const stoneRect = stone.getBoundingClientRect();
+
+        const potRect = pot.getBoundingClientRect();
+
+        /* SUCCESS */
+
+        if(
+
+            stoneRect.left < potRect.right &&
+            stoneRect.right > potRect.left &&
+            stoneRect.bottom > potRect.top &&
+            stoneRect.top < potRect.bottom
+
+        ){
+
+            clearInterval(fall);
+
+            stone.remove();
+
+            score++;
+
+            scoreText.innerText = score;
+
+            water.style.height = (20 + score * 10) + "%";
+
+            changePosition();
+
+            /* SPEED INCREASE */
+
+            let currentDuration = parseFloat(
+                getComputedStyle(crow).animationDuration
+            );
+
+            let newDuration = currentDuration - 0.3;
+
+            if(newDuration < 2){
+
+                newDuration = 2;
+
+            }
+
+            crow.style.animationDuration =
+            newDuration + "s";
+
+            /* WIN */
+
+            if(score >= 7){
+
+                gameOver = true;
+
+                clearInterval(countdown);
+
+                crow.style.animationPlayState = "paused";
+
+                message.style.display = "block";
+
+                message.innerHTML =
+                "🏆 YOU WIN!<br><br>🐦 Crow Drank Water";
+
+            }
+
+        }
+
+        /* MISS */
+
+        else if(y > window.innerHeight){
+
+            clearInterval(fall);
+
+            stone.remove();
+
+            misses++;
+
+            missText.innerText = misses;
+
+            changePosition();
+
+            screenShake();
+
+            if(misses >= 3){
+
+                loseGame("💀 GAME OVER");
+
+            }
+
+        }
+
+    },20);
+
+}
+
+/* LOSE */
+
+function loseGame(text){
+
+    gameOver = true;
+
+    clearInterval(countdown);
+
+    crow.style.animationPlayState = "paused";
+
+    message.style.display = "block";
+
+    message.innerHTML = text;
+
+}
+
+/* SCREEN SHAKE */
+
+function screenShake(){
+
+    document.body.style.transform = "translateX(10px)";
+
+    setTimeout(()=>{
+        document.body.style.transform = "translateX(-10px)";
+    },50);
+
+    setTimeout(()=>{
+        document.body.style.transform = "translateX(0px)";
+    },100);
+
+}
+
+/* RESTART */
+
+function restartGame(){
+
+    gameOver = false;
+
+    score = 0;
+    misses = 0;
+    timer = 40;
+
+    scoreText.innerText = 0;
+    missText.innerText = 0;
+    timerText.innerText = 40;
+
+    water.style.height = "20%";
+
+    message.style.display = "none";
+
+    crow.style.animationPlayState = "running";
+
+    crow.style.animationDuration = "5s";
+
+    changePosition();
+
+    startTimer();
+
+}
+
+</script>
+
+</body>
+</html>
